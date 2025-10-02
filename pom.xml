@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>services</module>
+        <module>model</module>
     </modules>
     <groupId>com.example</groupId>
     <artifactId>cloud-demo</artifactId>
@@ -22,6 +23,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-cloud.version>2023.0.3</spring-cloud.version>
         <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
     </properties>
