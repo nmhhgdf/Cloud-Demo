@@ -1,6 +1,7 @@
 package com.example.order.service.impl;
 
 import com.example.order.bean.Order;
+import com.example.order.feign.ProductFeignClient;
 import com.example.order.service.OrderService;
 import com.example.product.bean.Product;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +29,14 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private LoadBalancerClient loadBalancerClient;
 
+    @Autowired
+    private ProductFeignClient productFeignClient;
+
     @Override
     public Order createOrder(Long productId, Long userId) {
-        Product product = getProductFromRemoteWithLoadBalanceAnnotation(productId);
+//        Product product = getProductFromRemoteWithLoadBalanceAnnotation(productId);
+
+        Product product = productFeignClient.getProductById(productId, "xxx");
 
         return Order.builder()
                 .id(1L)
