@@ -1,6 +1,7 @@
 package com.example.order.service.impl;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.example.order.bean.Order;
 import com.example.order.feign.ProductFeignClient;
 import com.example.order.service.OrderService;
@@ -33,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ProductFeignClient productFeignClient;
 
-    @SentinelResource(value = "createOrder")
+    @SentinelResource(value = "createOrder", blockHandler = "createOderFallback")
     @Override
     public Order createOrder(Long productId, Long userId) {
 //        Product product = getProductFromRemoteWithLoadBalanceAnnotation(productId);
@@ -48,6 +49,16 @@ public class OrderServiceImpl implements OrderService {
                 .nickName("zhangsan")
                 .address("address")
                 .productList(Arrays.asList(product))
+                .build();
+    }
+
+    public Order createOderFallback(Long productId, Long userId, BlockException e) {
+        return Order.builder()
+                .id(0L)
+                .totalAmount(new BigDecimal("0"))
+                .userId(userId)
+                .nickName("未知用户")
+                .address("异常信息: " + e.getClass())
                 .build();
     }
 
