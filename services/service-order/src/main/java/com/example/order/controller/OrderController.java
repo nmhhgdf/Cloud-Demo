@@ -1,5 +1,7 @@
 package com.example.order.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.example.order.bean.Order;
 import com.example.order.properties.OrderProperties;
 import com.example.order.service.OrderService;
@@ -34,11 +36,21 @@ public class OrderController {
     }
 
     @GetMapping("/seckill")
-    public Order seckill(@RequestParam("userId") Long userId,
-                             @RequestParam("productId") Long productId) {
+    @SentinelResource(value = "seckill-order", fallback = "seckillFallback")
+    public Order seckill(@RequestParam(value = "userId", required = false) Long userId,
+                             @RequestParam(value = "productId", defaultValue = "1000") Long productId) {
         Order order = orderService.createOrder(productId, userId);
         order.setId(Long.MAX_VALUE);
         return order;
+    }
+
+    public Order seckillFallback(Long userId, Long productId, Throwable ex) {
+        log.error("seckillFallback...");
+        return Order.builder()
+                .id(productId)
+                .userId(userId)
+                .address("异常信息:" + ex.getClass())
+                .build();
     }
 
     @GetMapping("/writeDb")
